@@ -3,7 +3,7 @@ server:
 spring:
   elasticsearch:
     rest:
-      uris: http://101.132.44.38:9200
+      uris:
   jackson:
     property-naming-strategy: SNAKE_CASE
     date-format: yyyy-MM-dd HH:mm:ss
