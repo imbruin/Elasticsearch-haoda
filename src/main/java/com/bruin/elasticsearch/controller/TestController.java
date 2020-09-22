@@ -2,6 +2,7 @@ package com.bruin.elasticsearch.controller;
 
 import com.bruin.elasticsearch.entity.Goods;
 import com.bruin.elasticsearch.entity.Store;
+import com.bruin.elasticsearch.entity.StoreSearchRequest;
 import com.bruin.elasticsearch.service.GoodsService;
 import com.bruin.elasticsearch.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class TestController {
     @Autowired
     private GoodsService goodsService;
 
+    @GetMapping("/storeSearch")
+    public List<Store> storeSearch(@RequestBody StoreSearchRequest storeSearchRequest){
+        return storeService.listStore(storeSearchRequest);
+    }
+
     @PostMapping("/store")
     public void saveOrUpdateStore(@RequestBody Store store){
          storeService.saveOrUpdate(store);
@@ -32,7 +38,6 @@ public class TestController {
     public void saveStoreList(@RequestBody List<Store> listStore){
         storeService.savetBatch(listStore);
     }
-
     @DeleteMapping("/store")
     public void removeStore(@RequestBody Store store){
         storeService.remove(store);

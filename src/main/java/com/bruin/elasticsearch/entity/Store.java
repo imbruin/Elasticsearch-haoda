@@ -45,7 +45,15 @@ public class Store implements Serializable {
     @Field(name = "relation")
     private String relation;
 
-    public Store(String storeNo, String storeName, String liveStatus, Location location, String storeImg, String deliveryConfig, String relation) {
+    @JsonProperty("search_after")
+    private String searchAfter;
+
+    @JsonProperty("store.distance")
+    private String distance;
+
+    public Store(){}
+
+    public Store(String storeNo, String storeName, String liveStatus, Location location, String storeImg, String deliveryConfig, String relation, String searchAfter, String distance) {
         this.storeNo = storeNo;
         this.storeName = storeName;
         this.liveStatus = liveStatus;
@@ -53,6 +61,8 @@ public class Store implements Serializable {
         this.storeImg = storeImg;
         this.deliveryConfig = deliveryConfig;
         this.relation = relation;
+        this.searchAfter = searchAfter;
+        this.distance = distance;
     }
 
     public static long getSerialVersionUID() {
@@ -87,6 +97,14 @@ public class Store implements Serializable {
         return relation;
     }
 
+    public String getSearchAfter() {
+        return searchAfter;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
     public void setStoreNo(String storeNo) {
         this.storeNo = storeNo;
     }
@@ -113,5 +131,13 @@ public class Store implements Serializable {
 
     public void setRelation(String relation) {
         this.relation = relation;
+    }
+
+    public void setSearchAfter(String searchAfter) {
+        this.searchAfter = searchAfter;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }
