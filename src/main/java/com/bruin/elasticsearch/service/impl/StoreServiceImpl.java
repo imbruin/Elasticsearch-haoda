@@ -83,7 +83,7 @@ public class StoreServiceImpl implements StoreService {
             searchSourceBuilder.sort(geoDistanceSortBuilder);
             searchSourceBuilder.sort(sortBuilder);
             searchRequest.source(searchSourceBuilder);
-            System.out.println(searchSourceBuilder.toString());
+            //System.out.println(searchSourceBuilder.toString());
             SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             List<Store> list = new ArrayList<Store>();
             ObjectMapper mapper=new ObjectMapper();
