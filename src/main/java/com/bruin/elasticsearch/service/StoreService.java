@@ -1,6 +1,7 @@
 package com.bruin.elasticsearch.service;
 
 import com.bruin.elasticsearch.entity.Store;
+import com.bruin.elasticsearch.entity.StoreFollowRequest;
 import com.bruin.elasticsearch.entity.StoreSearchRequest;
 
 import java.util.List;
@@ -13,6 +14,13 @@ public interface StoreService {
      * @return
      */
     List<Store> listStore(StoreSearchRequest storeSearchRequest);
+
+    /**
+     * 门店关注列表
+     * @param storeFollowRequest
+     * @return
+     */
+    List<Store> listFollowStore(StoreFollowRequest storeFollowRequest);
 
     /**
      * 保存或者更新，如果存在就更新

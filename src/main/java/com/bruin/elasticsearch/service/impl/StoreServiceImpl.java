@@ -1,12 +1,12 @@
 package com.bruin.elasticsearch.service.impl;
 
-import com.bruin.elasticsearch.entity.Store;
 import com.bruin.elasticsearch.config.StoreGoodsIndexConfig;
+import com.bruin.elasticsearch.entity.Store;
+import com.bruin.elasticsearch.entity.StoreFollowRequest;
 import com.bruin.elasticsearch.entity.StoreSearchRequest;
 import com.bruin.elasticsearch.service.StoreService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -24,6 +24,7 @@ import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -70,10 +71,9 @@ public class StoreServiceImpl implements StoreService {
             searchSourceBuilder.query(boolQueryBuilder);
             //page
             searchSourceBuilder.size(StoreGoodsIndexConfig.PAGE_SIZE);
-            if (StringUtils.isNotBlank(storeSearchRequest.getSearchAfter())){
-                searchSourceBuilder.searchAfter(new Object[]{storeSearchRequest.getSearchAfter()});
+            if (null != storeSearchRequest.getSearchAfter() && storeSearchRequest.getSearchAfter().length >0){
+                searchSourceBuilder.searchAfter(new Object[]{storeSearchRequest.getSearchAfter()[0],storeSearchRequest.getSearchAfter()[1]});
             }
-
             //sort
             GeoDistanceSortBuilder geoDistanceSortBuilder = SortBuilders.geoDistanceSort(StoreGoodsIndexConfig.LOCATION,storeSearchRequest.getLocation().getLat(),storeSearchRequest.getLocation().getLon());
             geoDistanceSortBuilder.unit(DistanceUnit.KILOMETERS);
@@ -84,6 +84,48 @@ public class StoreServiceImpl implements StoreService {
             searchSourceBuilder.sort(sortBuilder);
             searchRequest.source(searchSourceBuilder);
             //System.out.println(searchSourceBuilder.toString());
+            SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+            List<Store> list = new ArrayList<Store>();
+            ObjectMapper mapper=new ObjectMapper();
+            Arrays.asList(searchResponse.getHits().getHits()).forEach(item ->{
+                try {
+                    Store store = mapper.readValue(item.getSourceAsString(),Store.class);
+                    store.setSearchAfter(mapper.writeValueAsString(item.getSortValues()));
+                    store.setDistance(item.getSortValues()[0].toString());
+                    list.add(store);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            });
+            return list;
+        }catch (Exception e){
+            logger.error(e.toString());
+        }
+        return null;
+    }
+
+    @Override
+    public List<Store> listFollowStore(StoreFollowRequest storeFollowRequest) {
+        try {
+            SearchRequest searchRequest = new SearchRequest(StoreGoodsIndexConfig.INDEX_NAME);
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+            //查询门店
+            TermsQueryBuilder termsQueryBuilder = QueryBuilders.termsQuery(StoreGoodsIndexConfig.STORE_NO,storeFollowRequest.getStoreNo());
+            searchSourceBuilder.query(termsQueryBuilder);
+            //page
+            searchSourceBuilder.size(StoreGoodsIndexConfig.PAGE_SIZE);
+            if (null != storeFollowRequest.getSearchAfter() && storeFollowRequest.getSearchAfter().length >0){
+                searchSourceBuilder.searchAfter(new Object[]{storeFollowRequest.getSearchAfter()[0],storeFollowRequest.getSearchAfter()[1]});
+            }
+            //sort
+            GeoDistanceSortBuilder geoDistanceSortBuilder = SortBuilders.geoDistanceSort(StoreGoodsIndexConfig.LOCATION,storeFollowRequest.getLocation().getLat(),storeFollowRequest.getLocation().getLon());
+            geoDistanceSortBuilder.unit(DistanceUnit.KILOMETERS);
+            geoDistanceSortBuilder.order(SortOrder.ASC);
+            geoDistanceSortBuilder.geoDistance(GeoDistance.PLANE);
+            SortBuilder sortBuilder = SortBuilders.fieldSort(StoreGoodsIndexConfig.STORE_NO).order(SortOrder.ASC);
+            searchSourceBuilder.sort(geoDistanceSortBuilder);
+            searchSourceBuilder.sort(sortBuilder);
+            searchRequest.source(searchSourceBuilder);
             SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             List<Store> list = new ArrayList<Store>();
             ObjectMapper mapper=new ObjectMapper();

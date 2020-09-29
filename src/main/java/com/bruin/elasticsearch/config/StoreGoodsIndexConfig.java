@@ -15,7 +15,7 @@ public class StoreGoodsIndexConfig {
     public static final String LOCATION = "store.location";
     public static final String STORE_NO = "store.store_no";
     public static final int PAGE_SIZE = 10;
-    public static final double DISTANCE = 3d;
+    public static final double DISTANCE = 10d;
 
 
 

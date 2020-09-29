@@ -2,6 +2,7 @@ package com.bruin.elasticsearch.controller;
 
 import com.bruin.elasticsearch.entity.Goods;
 import com.bruin.elasticsearch.entity.Store;
+import com.bruin.elasticsearch.entity.StoreFollowRequest;
 import com.bruin.elasticsearch.entity.StoreSearchRequest;
 import com.bruin.elasticsearch.service.GoodsService;
 import com.bruin.elasticsearch.service.StoreService;
@@ -27,6 +28,11 @@ public class TestController {
     @GetMapping("/storeSearch")
     public List<Store> storeSearch(@RequestBody StoreSearchRequest storeSearchRequest){
         return storeService.listStore(storeSearchRequest);
+    }
+
+    @GetMapping("/storeFollowSearch")
+    public List<Store> storeSearch(@RequestBody StoreFollowRequest storeFollowRequest){
+        return storeService.listFollowStore(storeFollowRequest);
     }
 
     @PostMapping("/store")

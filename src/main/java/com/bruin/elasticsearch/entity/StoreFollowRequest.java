@@ -1,7 +1,6 @@
 package com.bruin.elasticsearch.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.io.Serializable;
 
@@ -9,23 +8,20 @@ import java.io.Serializable;
  * @version 1.0.0
  * @Description: TODO
  * @Author: Bruin
- * @Date: 2020/9/21
+ * @Date: 2020/9/29
  */
-public class StoreSearchRequest implements Serializable {
-
+public class StoreFollowRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty("search_text")
-    private String searchText;
-
+    @JsonProperty("store.store_no")
+    private String[] storeNo;
     @JsonProperty("store.location")
     private Location location;
-
     @JsonProperty("search_after")
     private String[] searchAfter;
 
-    public StoreSearchRequest(String searchText, Location location, String[] searchAfter) {
-        this.searchText = searchText;
+    public StoreFollowRequest(String[] storeNo, Location location, String[] searchAfter) {
+        this.storeNo = storeNo;
         this.location = location;
         this.searchAfter = searchAfter;
     }
@@ -34,8 +30,8 @@ public class StoreSearchRequest implements Serializable {
         return serialVersionUID;
     }
 
-    public String getSearchText() {
-        return searchText;
+    public String[] getStoreNo() {
+        return storeNo;
     }
 
     public Location getLocation() {
@@ -46,8 +42,8 @@ public class StoreSearchRequest implements Serializable {
         return searchAfter;
     }
 
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
+    public void setStoreNo(String[] storeNo) {
+        this.storeNo = storeNo;
     }
 
     public void setLocation(Location location) {

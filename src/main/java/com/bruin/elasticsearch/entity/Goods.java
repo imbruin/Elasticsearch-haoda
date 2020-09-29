@@ -3,7 +3,6 @@ package com.bruin.elasticsearch.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.io.Serializable;
 
@@ -17,16 +16,13 @@ import java.io.Serializable;
 public class Goods implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Field(name = "goods.goods_code")
     @JsonProperty("goods.goods_code")
     private String goodsCode;
 
-    @Field(name = "goods.goods_name")
     @JsonProperty("goods.goods_name")
     private String goodsName;
 
     @JsonProperty("relation")
-    @Field(name = "relation")
     private Relation relation;
 
     public Goods(String goodsCode, String goodsName, Relation relation) {
